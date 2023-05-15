@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur Universel</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+            border: 1px solid black;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .input-container,
+        .output-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"],
+        select {
+            border: 1px solid black;
+            padding: 5px 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Convertisseur Universel</h1>
+        <div class="buttons-container">
+            <button id="lengthBtn"><i class="fas fa-ruler fa-2x"></i></button>
+            <button id="volumeBtn"><i class="fas fa-beer fa-2x"></i></button>
+            <button id="tempBtn"><i class="fas fa-thermometer-half fa-2x"></i></button>
+            <button id="weightBtn"><i class="fas fa-weight fa-2x"></i></button>
+        </div>
+        <div class="input-container">
+            <input type="number" id="inputValue" placeholder="Valeur à convertir">
+            <select id="inputUnit">
+            </select>
+        </div>
+        <div class="output-container">
+            <input type="number" id="outputValue" readonly>
+            <select id="outputUnit">
+            </select>
+        </div>
+        <button id="convertBtn">Convertir</button>
+        <button id="resetBtn">Réinitialiser</button>
+    </div>
+    <script>
+        const units = {
+            'Longueur': {
+                'millimètres': 1000,
+                'centimètres': 100,
+                'mètres': 1,
+                'kilomètres': 0.001,
+                'pieds': 3.28084,
+                'miles': 0.000621371
+            },
+            'Contenance': {
+                'millilitres': 1,
+                'centilitres': 10,
+                'décilitres': 0.1,
+                'litres': 0.001,
+            },
+            'Température': {
+                'Celsius': {
+                    'Celsius': (v) => v,
+                    'Fahrenheit': (v) => v * 9 / 5 + 32
+                },
+                'Fahrenheit': {
+                    'Celsius': (v) => (v - 32) * 5 / 9,
+                    'Fahrenheit': (v) => v
+                }
+            },
+            'Poids': {
+                'grammes': 1,
+                'kilogrammes': 0.001,
+                'tonnes': 0.000001,
+                'livres': 0.00220462
+            }
+        };
+        
+        let activeUnitType = 'Longueur';
+        
+        function populateUnits(unitType) {
+            activeUnitType = unitType;
+            
+            const inputUnit = document.getElementById("inputUnit");
+            const outputUnit = document.getElementById("outputUnit");
+            
+            inputUnit.innerHTML = '';
+            outputUnit.innerHTML = '';
+            
+            for (const unit in units[unitType]) {
+                const option = document.createElement("option");
+                option.value = unit;
+                option.text = unit;
+                
+                const optionCopy = option.cloneNode(true);
+                inputUnit.add(option);
+                outputUnit.add(optionCopy);
+            }
+        }
+        
+        document.getElementById("lengthBtn").addEventListener("click", () => populateUnits('Longueur'));
+        document.getElementById("volumeBtn").addEventListener("click", () => populateUnits('Contenance'));
+        document.getElementById("tempBtn").addEventListener("click", () => populateUnits('Température'));
+        document.getElementById("weightBtn").addEventListener("click", () => populateUnits('Poids'));
+        
+        document.getElementById("convertBtn").addEventListener("click", function() {
+            const inputValue = document.getElementById("inputValue").value;
+            const inputUnit = document.getElementById("inputUnit").value;
+            const outputUnit = document.getElementById("outputUnit").value;
+            
+            let convertedValue;
+            if(activeUnitType === 'Température') {
+                convertedValue = units[activeUnitType][inputUnit][outputUnit](inputValue);
+            } else {
+                convertedValue = inputValue * (units[activeUnitType][inputUnit] / units[activeUnitType][outputUnit]);
+            }
+            
+            document.getElementById("outputValue").value = convertedValue;
+        });
+        
+        document.getElementById("resetBtn").addEventListener("click", function() {
+            document.getElementById("inputValue").value = '';
+            document.getElementById("outputValue").value = '';
+        });
+        
+        populateUnits('Longueur');
+    </script>
+</body>
+</html>
