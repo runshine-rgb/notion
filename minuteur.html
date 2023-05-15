@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+        }
+        
+        .container {
+            text-align: center;
+            border: 1px solid black;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        #app {
+            text-align: center;
+            padding: 20px;
+        }
+        #timer {
+            font-size: 60px;
+            color: #000;
+            margin-bottom: 20px;
+        }
+        #controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 20px;
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #000;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+        }
+        .timeInput {
+            font-size: 40px;
+            margin-right: 10px;
+            width: 100px;
+            padding: 5px 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minuteur</h1>
+        <div id="app">
+            <div id="timer">
+                <input class="timeInput" id="hoursInput" type="number" min="0" max="23" placeholder="HH"> :
+                <input class="timeInput" id="minutesInput" type="number" min="0" max="59" placeholder="MM"> :
+                <input class="timeInput" id="secondsInput" type="number" min="0" max="59" placeholder="SS">
+            </div>
+            <div id="controls">
+                <button id="start"><i class="fas fa-play"></i></button>
+                <button id="pause" disabled><i class="fas fa-pause"></i></button>
+                <button id="reset"><i class="fas fa-undo"></i></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
+        let timerId = null;
+
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        function updateTimer() {
+            if (seconds > 0 || minutes > 0 || hours > 0) {
+                seconds--;
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        if (hours < 0) {
+                            clearInterval(timerId);
+                            timerId = null;
+                            document.getElementById('pause').disabled = true;
+                        }
+                    }
+                }
+                document.getElementById('hoursInput').value = pad(hours);
+                document.getElementById('minutesInput').
+                value = pad(minutes);
+                document.getElementById('secondsInput').value = pad(seconds);
+            }
+        }
+        
+        document.getElementById('start').addEventListener('click', function () {
+            if (!timerId) {
+                hours = parseInt(document.getElementById('hoursInput').value) || 0;
+                minutes = parseInt(document.getElementById('minutesInput').value) || 0;
+                seconds = parseInt(document.getElementById('secondsInput').value) || 0;
+                timerId = setInterval(updateTimer, 1000);
+                document.getElementById('pause').disabled = false;
+            }
+        });
+        
+        document.getElementById('pause').addEventListener('click', function () {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+                this.disabled = true;
+            }
+        });
+        
+        document.getElementById('reset').addEventListener('click', function () {
+            clearInterval(timerId);
+            timerId = null;
+            document.getElementById('pause').disabled = true;
+            document.getElementById('hoursInput').value = '';
+            document.getElementById('minutesInput').value = '';
+            document.getElementById('secondsInput').value = '';
+        });
+    </script>
+</body>
+</html>
