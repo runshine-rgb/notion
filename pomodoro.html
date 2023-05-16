@@ -1,254 +1,228 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-		<title>Pomodoro Timer</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				height: 100vh;
-				margin: 0;
-				background-color: #f7f7f7;
-			}
+<head>
+	<title>Pomodoro Timer</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+			background-color: #f7f7f7;
+		}
+		
+		.pomodoro {
+			text-align: center;
+			border: 2px solid #333;
+			padding: 20px;
+			border-radius: 10px;
+		}
+		.circle {
+			font-size: 3em;
+			padding: 30px;
+			display: inline-block;
+			justify-content: center;
+			align-items: center;
+			width: 250px;
+			height: 250px;
+			border-radius: 50%;
+			border: 2px solid black;
+			position: static;
 			
-			.pomodoro {
-				text-align: center;
-				border: 2px solid #333;
-				padding: 20px;
-				border-radius: 10px;
-			}
-			.circle {
-				font-size: 3em;
-				padding: 30px;
-				display: inline-block;
-				justify-content: center;
-				align-items: center;
-				width: 250px;
-				height: 250px;
-				border-radius: 50%;
-				border: 2px solid black;
-				position: static;
+		}
+		.timer {
+			position: absolute;
+			top: 44.5%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 2em;
+		}
+		
+		.adjustments {
+			display: flex;
+			justify-content: center;
+			gap: 20px;
+			margin-top: 20px;
+		}
+		
+		.adjustments button {
+			padding: 10px 60px;
+			font-size: 26px;
+			border: none;
+			color: white;
+			background-color: black;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		
+		.adjustments button:hover {
+			background-color: white;
+			color: black;
+			border: 1px solid black;
+		}
+		
+		.controls {
+			display: flex;
+			justify-content: center;
+			gap: 20px;
+			margin-top: 20px;
+		}
+		
+		.controls button {
+			padding: 10px 20px;
+			font-size: 1em;
+			border: none;
+			color: white;
+			background-color: black;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		
+		.controls button:hover {
+			background-color: white;
+			color: black;
+			border: 1px solid black;
+		}
+		.tabs {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 20px;
+		}
+		
+		.tab {
+			padding: 10px 20px;
+			border: 2px solid black;
+			border-radius: 5px;
+			margin-right: 10px;
+			cursor: pointer;
+			font-weight: bold;
+		}
+		
+		.tab.active {
+			background-color: black;
+			color: white;
+		}
+		
+		.work-session {
+			display: block;
+		}
+		
+		.break-session {
+			background-color: white;
+			color: black;
+			border: 1px solid black;
+		}
 
-			}
-			.timer {
-				position: absolute;
-				top: 46.5%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				font-size: 2em;
-			}
-			
-			.adjustments {
-				display: flex;
-				justify-content: center;
-				gap: 20px;
-				margin-top: 20px;
-			}
-			
-			.adjustments button {
-				padding: 10px 60px;
-				font-size: 26px;
-				border: none;
-				color: white;
-				background-color: black;
-				border-radius: 5px;
-				cursor: pointer;
-			}
-			
-			.adjustments button:hover {
-				background-color: white;
-				color: black;
-				border: 1px solid black;
-			}
-			
-			.controls {
-				display: flex;
-				justify-content: center;
-				gap: 20px;
-				margin-top: 20px;
-			}
-			
-			.controls button {
-				padding: 10px 20px;
-				font-size: 1em;
-				border: none;
-				color: white;
-				background-color: black;
-				border-radius: 5px;
-				cursor: pointer;
-			}
-			
-			.controls button:hover {
-				background-color: white;
-				color: black;
-				border: 1px solid black;
-			}
-			.tabs {
-				display: flex;
-				justify-content: center;
-				margin-bottom: 20px;
-			}
-			
-			.tab {
-				padding: 10px 20px;
-				border: 2px solid black;
-				border-radius: 5px;
-				margin-right: 10px;
-				cursor: pointer;
-				font-weight: bold;
-			}
-			
-			.tab.active {
-				background-color: black;
-				color: white;
-			}
-			
-			.work-session {
-				display: block;
-			}
-			
-			.break-session {
-				background-color: white;
-				color: black;
-				border: 1px solid black;
-			}
+	</style>
+</head>
+<body>
+	<div class="pomodoro">
+		<div class="tabs">
+			<div class="tab active" id="work-tab">Travail</div>
+			<div class="tab" id="break-tab">Pause</div>
+		</div>
+		<div class="circle">
+			<div class="timer" id="timer">25:00</div>
+		</div>
+		<div class="adjustments">
+			<button id="decrease"><i class="fas fa-minus"></i></button>
+			<button id="increase"><i class="fas fa-plus"></i></button>
+		</div>
+		<div class="controls">
+			<button id="start"><i class="fas fa-play"></i></button>
+			<button id="stop"><i class="fas fa-pause"></i></button>
+			<button id="reset"><i class="fas fa-undo"></i></button>
+		</div>
+	</div>
+	<script>
+		let startButton = document.getElementById('start');
+		let stopButton = document.getElementById('stop');
+		let resetButton = document.getElementById('reset');
+		let increaseButton = document.getElementById('increase');
+		let decreaseButton = document.getElementById('decrease');
+		let timerDisplay = document.getElementById('timer');
 
-		</style>
-	</head>
-	<body>
+		let timer;
+		let isRunning = false;
+		let isWorkTime = true;
+		let workTime = 25 * 60; // 25 minutes in seconds
+		let breakTime = 5 * 60; // 5 minutes in seconds
+		let timeRemaining = workTime;
 
-		<div class="pomodoro">
-			
-			<div class="tabs">
-				<div class="tab" id="work-tab">
-					Travail
-				</div>
-				<div class="tab" id="break-tab">
-					Pause
-				</div>
-			</div>
-			<div class="circle">
-				<div class="timer" id="timer">25:00</div>
-			</div>
-			<div class="adjustments">
-				<button id="decrease">-</button>
-				<button id="increase">+</button>
-			</div>
-			
-			<div class="controls">
-				<button id="start"><i class="fas fa-play"></i></button>
-				<button id="stop"><i class="fas fa-pause"></i></button>
-				<button id="reset"><i class="fas fa-undo"></i></button>
-			</div>
-			
-			<div class="work-session">
-				<div class="timer" id="work-timer"></div>
-			</div>
-			
+		function updateDisplay() {
+			let minutes = Math.floor(timeRemaining / 60);
+			let seconds = timeRemaining % 60;
+			timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+		}
 
-			<script>
-				let startButton = document.getElementById('start');
-				let stopButton = document.getElementById('stop');
-				let resetButton = document.getElementById('reset');
-				let increaseButton = document.getElementById('increase');
-				let decreaseButton = document.getElementById('decrease');
-				let timerDisplay = document.getElementById('timer');
-				let workTimerDisplay = document.getElementById('work-timer');
-				let breakTimerDisplay = document.getElementById('break-timer');
-				
-				let timer;
-				let isRunning = false;
-				let timeRemaining = 25 * 60; // 25 minutes in seconds
-				let workTimeRemaining = 25 * 60; // 25 minutes in seconds
-				let breakTimeRemaining = 5 * 60; // 5 minutes in seconds
-				
-				function updateDisplay() {
-					let minutes = Math.floor(timeRemaining / 60);
-					let seconds = timeRemaining % 60;
-					timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-				}
-				
-				function updateWorkTimerDisplay() {
-					let minutes = Math.floor(workTimeRemaining / 60);
-					let seconds = workTimeRemaining % 60;
-					workTimerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-				}
-				
-				function updateBreakTimerDisplay() {
-					let minutes = Math.floor(breakTimeRemaining / 60);
-					let seconds = breakTimeRemaining % 60;
-					breakTimerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-				}
-				
-				startButton.addEventListener('click', () => {
-					if (!isRunning) {
-						isRunning = true;
-						timer = setInterval(() => {
-							if (timeRemaining > 0) {
-								timeRemaining--;
-							} else {
-								clearInterval(timer);
-								isRunning = false;
-							}
-							updateDisplay();
-						}, 1000);
-					}
-				});
-				
-				stopButton.addEventListener('click', () => {
-					if (isRunning) {
-						isRunning = false;
+		startButton.addEventListener('click', () => {
+			if (!isRunning) {
+				isRunning = true;
+				timer = setInterval(() => {
+					if (timeRemaining > 0) {
+						timeRemaining--;
+					} else {
 						clearInterval(timer);
+						isRunning = false;
 					}
-				});
-				
-				resetButton.addEventListener('click', () => {
-					if (!isRunning) {
-						timeRemaining = 25 * 60;
-						updateDisplay();
-					}
-				});
-				
-				increaseButton.addEventListener('click', () => {
-					if (!isRunning) {
-						timeRemaining += 60; // Increase by 1 minute
-						updateDisplay();
-					}
-				});
-				
-				decreaseButton.addEventListener('click', () => {
-					if (!isRunning && timeRemaining >= 60) { // Ensure timeRemaining doesn't go below 0
-						timeRemaining -= 60; // Decrease by 1 minute
-						updateDisplay();
-					}
-				});
-				
-				let workTab = document.getElementById('work-tab');
-				let breakTab = document.getElementById('break-tab');
-				let workSession = document.querySelector('.work-session');
-				let breakSession = document.querySelector('.break-session');
-				
-				workTab.addEventListener('click', () => {
-					workTab.classList.add('active');
-					breakTab.classList.remove('active');
-					workSession.style.display = 'block';
-					breakSession.style.display = 'none';
-					timeRemaining = workTimeRemaining;
 					updateDisplay();
-				});
-				
-				breakTab.addEventListener('click', () => {
-					breakTab.classList.add('active');
-					workTab.classList.remove('active');
-					breakSession.style.display = 'block';
-					workSession.style.display = 'none';
-					timeRemaining = breakTimeRemaining;
-					updateDisplay();
-				});
-			</script>
-	</body>
-</html>
+				}, 1000);
+			}
+		});
 
+		stopButton.addEventListener('click', () => {
+			if (isRunning) {
+				isRunning = false;
+				clearInterval(timer);
+			}
+		});
+
+		resetButton.addEventListener('click', () => {
+			if (!isRunning) {
+				timeRemaining = isWorkTime ? workTime : breakTime;
+				updateDisplay();
+			}
+		});
+
+		increaseButton.addEventListener('click', () => {
+			if (!isRunning) {
+				timeRemaining += 60; // Increase by 1 minute
+				updateDisplay();
+			}
+		});
+
+		decreaseButton.addEventListener('click', () => {
+			if (!isRunning && timeRemaining >= 60) { // Ensure timeRemaining doesn't go below 0
+				timeRemaining -= 60; // Decrease by 1 minute
+				updateDisplay();
+			}
+		});
+		
+		let workTab = document.getElementById('work-tab');
+		let breakTab = document.getElementById('break-tab');
+		
+		workTab.addEventListener('click', () => {
+			if (!isRunning) {
+				isWorkTime = true;
+				timeRemaining = workTime;
+				updateDisplay();
+				workTab.classList.add('active');
+				breakTab.classList.remove('active');
+			}
+		});
+		
+		breakTab.addEventListener('click', () => {
+			if (!isRunning) {
+				isWorkTime = false;
+				timeRemaining = breakTime;
+				updateDisplay();
+				breakTab.classList.add('active');
+				workTab.classList.remove('active');
+			}
+		});
+	</script>
+</body>
+</html>
